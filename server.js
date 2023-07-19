@@ -1,4 +1,3 @@
-const http = require('http');
 const app = require('./app');
 
 // Configuration du port
@@ -23,8 +22,7 @@ const errorHandler = error => {
     throw error;
   }
 
-  const address = server.address();
-  const bind = typeof address === 'string' ? 'pipe ' + address : 'port ' + port;
+  const bind = typeof port === 'string' ? 'pipe ' + port : 'port ' + port;
 
   switch (error.code) {
     case 'EACCES':
@@ -51,18 +49,7 @@ app.get('/', (req, res) => {
   res.send('Serveur actif');
 });
 
-// Création du serveur
-const server = http.createServer(app);
-
-// Gestion des événements du serveur
-server.on('error', errorHandler);
-server.on('listening', () => {
-  const address = server.address();
-  const bind = typeof address === 'string' ? 'pipe ' + address : 'port ' + port;
-  console.log('Server is listening on ' + bind);
-});
-
 // Démarrage du serveur
-server.listen(port, () => {
+app.listen(port, () => {
   console.log('Server started on port ' + port);
 });
