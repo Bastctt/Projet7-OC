@@ -1,55 +1,45 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const path = require('path');
-const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
-const password = require('./utils/password');
-
 const booksRoutes = require('./routes/books');
 const userRoutes = require('./routes/user');
+const path = require('path');
+const password = require('./utils/password')
 
-const app = express();
+const { MongoClient } = require('mongodb');
 
-// Middleware pour gérer les requêtes JSON
-app.use(express.json());
+const uri = `mongodb://bastctt:${password}@ac-hqimfph-shard-00-00.rukwpky.mongodb.net:27017,ac-hqimfph-shard-00-01.rukwpky.mongodb.net:27017,ac-hqimfph-shard-00-02.rukwpky.mongodb.net:27017/?ssl=true&replicaSet=atlas-yv1a6w-shard-0&authSource=admin&retryWrites=true&w=majority`;
 
-// Middleware pour gérer les requêtes CORS
-app.use(cors());
-
-// Connexion à la base de données MongoDB
-const uri = `mongodb+srv://bastctt:${password}@cluster0.rukwpky.mongodb.net/?retryWrites=true&w=majority`;
-
-const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  },
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+client.connect((err) => {
+  if (err) {
+    console.error('Error connecting to the database:', err);
+    return;
+  }
+  console.log('Database connectée');
 });
 
-client
-  .connect()
-  .then(() => {
-    const db = client.db('@cluster0'); 
-    console.log('Connexion à MongoDB réussie !');
+// Création de l'application
+const app = express();
+// Middleware permettant à Express d'extraire le corps JSON des requêtes POST
+app.use(express.json());
 
-    // Enregistrement des routeurs
-    app.use('/api/auth', userRoutes);
-    app.use('/api/books', booksRoutes);
+// Middleware gérant les erreurs de CORS
+app.use((req, res, next) => {
+    // Accès à notre API depuis n'importe quelle origine
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    // Autorisation d'ajouter les headers mentionnés aux requêtes envoyées vers notre API
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
+    // Autorisation d'envoyer des requêtes avec les méthodes mentionnées
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+    next();
+});
 
-    // Gestion de la ressource images de manière statique
-    app.use('/images', express.static(path.join(__dirname, 'images')));
+// Gestion de la ressource images de manière statique
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
-    // Démarrage du serveur
-    const port = process.env.PORT || 4000;
-    app.listen(port, () => {
-      console.log(`Serveur démarré sur le port ${port}`);
-    });
-  })
-  .catch((error) => {
-    console.error('Connexion à MongoDB échouée :', error);
-  });
+// Enregistrement des routeurs
+app.use('/api/auth', userRoutes);
+app.use('/api/books', booksRoutes);
 
 module.exports = app;
-
 

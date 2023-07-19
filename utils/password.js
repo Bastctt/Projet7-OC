@@ -1,3 +1,3 @@
-const password = 'aSgEul1AeeNXZviU';
+const password = 'YFtSrLtpAY0ZiccE';
 
 module.exports = password;
