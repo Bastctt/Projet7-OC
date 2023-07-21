@@ -1,45 +1,30 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const booksRoutes = require('./routes/books');
-const userRoutes = require('./routes/user');
+const Routes = require('./routes');
 const path = require('path');
 const password = require('./utils/password')
-
-const { MongoClient } = require('mongodb');
-
 const uri = `mongodb://bastctt:${password}@ac-hqimfph-shard-00-00.rukwpky.mongodb.net:27017,ac-hqimfph-shard-00-01.rukwpky.mongodb.net:27017,ac-hqimfph-shard-00-02.rukwpky.mongodb.net:27017/?ssl=true&replicaSet=atlas-yv1a6w-shard-0&authSource=admin&retryWrites=true&w=majority`;
 
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-client.connect((err) => {
-  if (err) {
-    console.error('Error connecting to the database:', err);
-    return;
-  }
-  console.log('Database connectée');
-});
+mongoose.connect(uri,
+  { useNewUrlParser: true,
+    useUnifiedTopology: true })
+  .then(() => console.log('Connexion à MongoDB réussie !'))
+  .catch(() => console.log('Connexion à MongoDB échouée !'));
 
-// Création de l'application
 const app = express();
-// Middleware permettant à Express d'extraire le corps JSON des requêtes POST
+
 app.use(express.json());
 
-// Middleware gérant les erreurs de CORS
 app.use((req, res, next) => {
-    // Accès à notre API depuis n'importe quelle origine
     res.setHeader('Access-Control-Allow-Origin', '*');
-    // Autorisation d'ajouter les headers mentionnés aux requêtes envoyées vers notre API
     res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
-    // Autorisation d'envoyer des requêtes avec les méthodes mentionnées
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
     next();
 });
 
-// Gestion de la ressource images de manière statique
 app.use('/images', express.static(path.join(__dirname, 'images')));
-
-// Enregistrement des routeurs
-app.use('/api/auth', userRoutes);
-app.use('/api/books', booksRoutes);
+app.use('/api/auth', Routes);
+app.use('/api/books', Routes);
 
 module.exports = app;
 
