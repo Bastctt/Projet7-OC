@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const Routes = require('./routes');
+const Routes = require('../backend/routes');
 const path = require('path');
 const password = require('./utils/password')
 const uri = `mongodb://bastctt:${password}@ac-hqimfph-shard-00-00.rukwpky.mongodb.net:27017,ac-hqimfph-shard-00-01.rukwpky.mongodb.net:27017,ac-hqimfph-shard-00-02.rukwpky.mongodb.net:27017/?ssl=true&replicaSet=atlas-yv1a6w-shard-0&authSource=admin&retryWrites=true&w=majority`;

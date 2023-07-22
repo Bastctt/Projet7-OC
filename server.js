@@ -1,5 +1,4 @@
 const app = require('./app');
-
 // Configuration du port
 const normalizePort = val => {
   const port = parseInt(val, 10);
@@ -37,7 +36,6 @@ const errorHandler = error => {
       throw error;
   }
 };
-
 
 app.use((req, res, next) => {
   console.log('Received request:', req.method, req.url);
