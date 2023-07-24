@@ -1,3 +1,3 @@
-const password = 'YFtSrLtpAY0ZiccE';
+const password = process.env.MONGO_DB_PASSWORD;
 
 module.exports = password;
