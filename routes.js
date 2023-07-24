@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const auth = require('../backend/intermediaire/authentification');
-const upload = require('../backend/intermediaire/upload');
-const userCtrl = require('../backend/action/user');
-const booksCtrl = require('../backend/action/books')
+const auth = require('./middleware/authentification');
+const upload = require('./middleware/upload');
+const userCtrl = require('./controller/user');
+const booksCtrl = require('./controller/books')
 
 // Logique des routes books
 router.get('/', booksCtrl.getAllBooks);
