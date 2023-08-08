@@ -46,3 +46,4 @@ L'authentification doit être renforcée sur toutes les routes livre (book) requ
 Les adresses électroniques dans la base de données sont uniques, et un plugin Mongoose approprié est utilisé pour garantir leur unicité et signaler les erreurs.
 La sécurité de la base de données MongoDB (à partir d'un service tel que MongoDB Atlas) ne doit pas empêcher l'application de se lancer sur la machine d'un utilisateur.
 Les erreurs issues de la base de données doivent être remontées.
+# Projet7-OC
