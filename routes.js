@@ -1,21 +1,23 @@
 const express = require('express');
 const router = express.Router();
-const auth = require('./middleware/authentification');
-const upload = require('./middleware/upload');
-const userCtrl = require('./controller/user');
-const booksCtrl = require('./controller/books')
 
-// Logique des routes books
-router.get('/', booksCtrl.getAllBooks);
-router.get('/bestrating', booksCtrl.getBestRating);
-router.get('/:id', booksCtrl.getOneBook);
-router.post('/', auth, upload, upload.resizeImage, booksCtrl.createBook);
-router.post('/:id/rating', auth, booksCtrl.createRating);
-router.put('/:id', auth, upload, upload.resizeImage, booksCtrl.modifyBook);
-router.delete('/:id', auth, booksCtrl.deleteBook);
+// Import des middlewares et contrôleurs
+const authenticationMiddleware = require('./middleware/authenticationMiddleware');
+const uploadMiddleware = require('./middleware/uploadMiddleware');
+const userController = require('./controller/user');
+const booksController = require('./controller/books');
 
-// Logique des routes user
-router.post('/signup', userCtrl.signup);
-router.post('/login', userCtrl.login);
+// Routes liées aux livres
+router.get('/', booksController.getAllBooks);
+router.get('/bestrating', booksController.getBestRating);
+router.get('/:id', booksController.getOneBook);
+router.post('/', authenticationMiddleware, uploadMiddleware, uploadMiddleware.resizeImage, booksController.createBook);
+router.post('/:id/rating', authenticationMiddleware, booksController.createRating);
+router.put('/:id', authenticationMiddleware, uploadMiddleware, uploadMiddleware.resizeImage, booksController.modifyBook);
+router.delete('/:id', authenticationMiddleware, booksController.deleteBook);
+
+// Routes liées aux utilisateurs
+router.post('/signup', userController.signup);
+router.post('/login', userController.login);
 
 module.exports = router;

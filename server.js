@@ -1,6 +1,8 @@
 const app = require('./app');
+const http = require('http');
+
 // Configuration du port
-const normalizePort = val => {
+const normalizePort = (val) => {
   const port = parseInt(val, 10);
 
   if (isNaN(port)) {
@@ -16,7 +18,7 @@ const port = normalizePort(process.env.PORT || '4000');
 app.set('port', port);
 
 // Gestion des erreurs
-const errorHandler = error => {
+const errorHandler = (error) => {
   if (error.syscall !== 'listen') {
     throw error;
   }
@@ -37,17 +39,14 @@ const errorHandler = error => {
   }
 };
 
-app.use((req, res, next) => {
-  console.log('Received request:', req.method, req.url);
-  next();
-});
+const server = http.createServer(app);
 
-// Routes
-app.get('/', (req, res) => {
-  res.send('Serveur actif');
+server.on('error', errorHandler);
+server.on('listening', () => {
+  const address = server.address();
+  const bind = typeof address === 'string' ? 'pipe ' + address : 'port ' + address.port;
+  console.log('Server started on ' + bind);
 });
 
 // Démarrage du serveur
-app.listen(port, () => {
-  console.log('Server started on port ' + port);
-});
+server.listen(port);

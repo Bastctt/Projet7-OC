@@ -1,7 +1,5 @@
-exports.average = (array) => {
-    let sum = 0;
-    for (let nb of array) {
-        sum += nb;
-    };
-    return (sum/array.length).toFixed(1);
+exports.calculateAverage = (array) => {
+    const sum = array.reduce((acc, currentValue) => acc + currentValue, 0);
+    const average = sum / array.length;
+    return average.toFixed(1);
 };
